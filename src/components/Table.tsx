@@ -1,26 +1,20 @@
-import { TableProps } from "../types";
 import { TableProvider } from "../context/context";
 import { TableContent } from "./TableContent";
+import { TableController } from "./TableController";
+import { TableProps } from "../types";
 
-const TableComponent = <T extends object>({
+export function Table<T extends object>({
+  columns,
   data,
-  columns: initialColumns,
   storageKey,
-  className,
-  style,
   theme,
-}: TableProps<T>) => {
+}: TableProps<T>) {
   return (
-    <TableProvider
-      columns={initialColumns}
-      storageKey={storageKey}
-      theme={theme}
-    >
-      <TableContent data={data} className={className} style={style} />
+    <TableProvider columns={columns} storageKey={storageKey} theme={theme}>
+      <div className="w-full">
+        <TableController columns={columns} />
+        <TableContent data={data} />
+      </div>
     </TableProvider>
   );
-};
-
-export const Table = TableComponent as <T extends object>(
-  props: TableProps<T>
-) => JSX.Element;
+}

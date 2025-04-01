@@ -27,4 +27,5 @@ export type TableContextType<T extends object> = {
   selectedColumns: Set<keyof T>;
   setSelectedColumns: (columns: Set<keyof T>) => void;
   theme: TableProps<T>["theme"];
+  storageKey?: string;
 };

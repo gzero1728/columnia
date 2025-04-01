@@ -54,7 +54,7 @@ export const TableContent = <T extends object>({
   className?: string;
   style?: React.CSSProperties;
 }) => {
-  const { columns, setColumns } = useTable<T>();
+  const { columns, setColumns, selectedColumns } = useTable<T>();
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -74,6 +74,10 @@ export const TableContent = <T extends object>({
     })
   );
 
+  const visibleColumns = columns.filter((column) =>
+    selectedColumns.has(column.key)
+  );
+
   return (
     <div className={cn("relative", className)} style={style}>
       <div className="overflow-x-auto">
@@ -86,12 +90,12 @@ export const TableContent = <T extends object>({
             <thead className="bg-gray-50">
               <tr>
                 <SortableContext
-                  items={columns.map(
+                  items={visibleColumns.map(
                     (col) => String(col.key) as UniqueIdentifier
                   )}
                   strategy={horizontalListSortingStrategy}
                 >
-                  {columns.map((column) => (
+                  {visibleColumns.map((column) => (
                     <SortableHeader key={String(column.key)} column={column} />
                   ))}
                 </SortableContext>
@@ -100,7 +104,7 @@ export const TableContent = <T extends object>({
             <tbody className="bg-white divide-y divide-gray-200">
               {data.map((row, rowIndex) => (
                 <tr key={rowIndex} className="text-center">
-                  {columns.map((column) => (
+                  {visibleColumns.map((column) => (
                     <td
                       key={String(column.key)}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center align-middle"
