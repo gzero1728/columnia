@@ -19,6 +19,18 @@ export type TableProps<T extends object> = {
     text?: string;
     border?: string;
   };
+  renderTableController?: (props: {
+    columns: Column<T>[];
+    selectedColumns: Set<keyof T>;
+    onColumnToggle: (columnKey: keyof T) => void;
+    onReset: () => void;
+  }) => React.ReactNode;
+  renderTableContent?: (props: {
+    data: T[];
+    columns: Column<T>[];
+    selectedColumns: Set<keyof T>;
+    onDragEnd: (event: any) => void;
+  }) => React.ReactNode;
 };
 
 export type TableContextType<T extends object> = {

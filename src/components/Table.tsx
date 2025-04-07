@@ -8,12 +8,17 @@ export function Table<T extends object>({
   data,
   storageKey,
   theme,
+  renderTableController,
+  renderTableContent,
 }: TableProps<T>) {
   return (
     <TableProvider columns={columns} storageKey={storageKey} theme={theme}>
       <div>
-        <TableController columns={columns} />
-        <TableContent data={data} />
+        <TableController
+          columns={columns}
+          renderTableController={renderTableController}
+        />
+        <TableContent data={data} renderTableContent={renderTableContent} />
       </div>
     </TableProvider>
   );

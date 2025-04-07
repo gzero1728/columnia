@@ -1,12 +1,14 @@
 import { useTable } from "../hooks/useTable";
-import { Column } from "../types";
+import { Column, TableProps } from "../types";
 
 interface TableControllerProps<T extends object> {
   columns: Column<T>[];
+  renderTableController?: TableProps<T>["renderTableController"];
 }
 
 export function TableController<T extends object>({
   columns,
+  renderTableController,
 }: TableControllerProps<T>) {
   const { selectedColumns, setSelectedColumns, setColumns, storageKey } =
     useTable<T>();
@@ -28,6 +30,15 @@ export function TableController<T extends object>({
       localStorage.removeItem(storageKey);
     }
   };
+
+  if (renderTableController) {
+    return renderTableController({
+      columns,
+      selectedColumns,
+      onColumnToggle: handleColumnToggle,
+      onReset: handleReset,
+    });
+  }
 
   return (
     <div>

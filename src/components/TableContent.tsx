@@ -15,7 +15,7 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Column } from "../types";
+import { Column, TableProps } from "../types";
 import { useTable } from "../hooks/useTable";
 
 const SortableHeader = <T extends object>({
@@ -47,10 +47,12 @@ export const TableContent = <T extends object>({
   data,
   className,
   style,
+  renderTableContent,
 }: {
   data: T[];
   className?: string;
   style?: React.CSSProperties;
+  renderTableContent?: TableProps<T>["renderTableContent"];
 }) => {
   const { columns, setColumns, selectedColumns } = useTable<T>();
 
@@ -75,6 +77,15 @@ export const TableContent = <T extends object>({
   const visibleColumns = columns.filter((column) =>
     selectedColumns.has(column.key)
   );
+
+  if (renderTableContent) {
+    return renderTableContent({
+      data,
+      columns: visibleColumns,
+      selectedColumns,
+      onDragEnd: handleDragEnd,
+    });
+  }
 
   return (
     <div style={style} className={className}>
