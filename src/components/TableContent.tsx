@@ -17,7 +17,6 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Column } from "../types";
 import { useTable } from "../hooks/useTable";
-import { cn } from "../utils";
 
 const SortableHeader = <T extends object>({
   column,
@@ -38,7 +37,6 @@ const SortableHeader = <T extends object>({
       {...attributes}
       {...listeners}
       scope="col"
-      className="px-6 py-3 text-center text-base font-bold text-gray-700 uppercase tracking-wider cursor-move hover:bg-gray-100"
     >
       {column.label}
     </th>
@@ -79,15 +77,15 @@ export const TableContent = <T extends object>({
   );
 
   return (
-    <div className={cn("relative", className)} style={style}>
-      <div className="overflow-x-auto">
+    <div style={style} className={className}>
+      <div>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          <table className="min-w-full divide-y divide-gray-200 table-fixed">
-            <thead className="bg-gray-50">
+          <table>
+            <thead>
               <tr>
                 <SortableContext
                   items={visibleColumns.map(
@@ -101,16 +99,11 @@ export const TableContent = <T extends object>({
                 </SortableContext>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody>
               {data.map((row, rowIndex) => (
-                <tr key={rowIndex} className="text-center">
+                <tr key={rowIndex}>
                   {visibleColumns.map((column) => (
-                    <td
-                      key={String(column.key)}
-                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center align-middle"
-                    >
-                      {String(row[column.key])}
-                    </td>
+                    <td key={String(column.key)}>{String(row[column.key])}</td>
                   ))}
                 </tr>
               ))}

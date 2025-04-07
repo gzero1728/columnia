@@ -11,7 +11,7 @@ export function Table<T extends object>({
 }: TableProps<T>) {
   return (
     <TableProvider columns={columns} storageKey={storageKey} theme={theme}>
-      <div className="w-full">
+      <div>
         <TableController columns={columns} />
         <TableContent data={data} />
       </div>
