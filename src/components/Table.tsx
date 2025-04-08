@@ -5,13 +5,13 @@ import { TableProps } from "../types";
 import { useTable } from "../hooks/useTable";
 import { arrayMove } from "../utils";
 
-export function Table<T extends object>({
+export const Table = <T extends object>({
   columns,
   data,
   storageKey,
   renderTableController,
   renderTableContent,
-}: TableProps<T>) {
+}: TableProps<T>) => {
   return (
     <TableProvider columns={columns} storageKey={storageKey}>
       <TableWrapper
@@ -21,9 +21,9 @@ export function Table<T extends object>({
       />
     </TableProvider>
   );
-}
+};
 
-function TableWrapper<T extends object>({
+const TableWrapper = <T extends object>({
   data,
   renderTableController,
   renderTableContent,
@@ -31,7 +31,7 @@ function TableWrapper<T extends object>({
   data: T[];
   renderTableController?: TableProps<T>["renderTableController"];
   renderTableContent?: TableProps<T>["renderTableContent"];
-}) {
+}) => {
   const { columns, selectedColumns, setColumns, setSelectedColumns } =
     useTable<T>();
 
@@ -85,4 +85,4 @@ function TableWrapper<T extends object>({
       )}
     </div>
   );
-}
+};

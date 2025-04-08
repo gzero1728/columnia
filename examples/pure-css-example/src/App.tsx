@@ -62,7 +62,7 @@ const data: User[] = [
   },
 ];
 
-function App() {
+const App = () => {
   return (
     <div className="table-container">
       <h1>Columnia Pure CSS Example</h1>
@@ -165,6 +165,6 @@ function App() {
       />
     </div>
   );
-}
+};
 
 export default App;

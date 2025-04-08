@@ -6,10 +6,10 @@ interface TableControllerProps<T extends object> {
   renderTableController?: TableProps<T>["renderTableController"];
 }
 
-export function TableController<T extends object>({
+export const TableController = <T extends object>({
   columns,
   renderTableController,
-}: TableControllerProps<T>) {
+}: TableControllerProps<T>) => {
   const { selectedColumns, setSelectedColumns, setColumns, storageKey } =
     useTable<T>();
 
@@ -57,4 +57,4 @@ export function TableController<T extends object>({
       <button onClick={handleReset}>초기화</button>
     </div>
   );
-}
+};

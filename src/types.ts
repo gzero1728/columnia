@@ -51,3 +51,9 @@ export interface TableControllerComponent
   extends React.FC<TableControllerProps<any>> {
   <T extends object>(props: TableControllerProps<T>): React.ReactElement;
 }
+
+export type TableProviderProps<T extends object> = {
+  children: React.ReactNode;
+  columns: Column<T>[];
+  storageKey?: string;
+};
