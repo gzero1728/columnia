@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { TableContextType, Column, TableProps } from "../types";
+import { TableContextType, Column } from "../types";
 import { TableContext } from "./createContext";
 
 export function TableProvider<T extends object>({
   children,
   columns: initialColumns,
   storageKey,
-  theme,
 }: {
   children: React.ReactNode;
   columns: Column<T>[];
   storageKey?: string;
-  theme?: TableProps<T>["theme"];
 }) {
   // Initialize state with localStorage values if available
   const getInitialState = () => {
@@ -122,7 +120,6 @@ export function TableProvider<T extends object>({
     setColumns,
     selectedColumns,
     setSelectedColumns,
-    theme,
     storageKey,
   };
 

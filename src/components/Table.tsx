@@ -9,12 +9,11 @@ export function Table<T extends object>({
   columns,
   data,
   storageKey,
-  theme,
   renderTableController,
   renderTableContent,
 }: TableProps<T>) {
   return (
-    <TableProvider columns={columns} storageKey={storageKey} theme={theme}>
+    <TableProvider columns={columns} storageKey={storageKey}>
       <TableWrapper
         data={data}
         renderTableController={renderTableController}
