@@ -1,14 +1,14 @@
 import { useTable } from "../hooks/useTable";
 import { Column, TableProps } from "../types";
 
-interface TableControllerProps<T extends object> {
+type TableControllerProps<T extends object> = {
   columns: Column<T>[];
-  renderTableController?: TableProps<T>["renderTableController"];
-}
+  renderController?: TableProps<T>["renderController"];
+};
 
 export const TableController = <T extends object>({
   columns,
-  renderTableController,
+  renderController,
 }: TableControllerProps<T>) => {
   const { selectedColumns, setSelectedColumns, setColumns, storageKey } =
     useTable<T>();
@@ -31,8 +31,8 @@ export const TableController = <T extends object>({
     }
   };
 
-  if (renderTableController) {
-    return renderTableController({
+  if (renderController) {
+    return renderController({
       columns,
       selectedColumns,
       onColumnToggle: handleColumnToggle,

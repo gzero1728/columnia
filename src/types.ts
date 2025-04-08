@@ -1,7 +1,3 @@
-import { DragEndEvent as DndKitDragEndEvent } from "@dnd-kit/core";
-
-export type DragEndEvent = DndKitDragEndEvent;
-
 export type Column<T> = {
   key: keyof T;
   label: string;
@@ -10,18 +6,18 @@ export type Column<T> = {
   hidden?: boolean;
 };
 
-export type TableControllerProps<T extends object> = {
+export type RenderControllerProps<T extends object> = {
   columns: Column<T>[];
   selectedColumns: Set<keyof T>;
   onColumnToggle: (columnKey: keyof T) => void;
   onReset: () => void;
 };
 
-export type TableContentProps<T extends object> = {
+export type RenderContentProps<T extends object> = {
   data: T[];
   columns: Column<T>[];
   selectedColumns: Set<keyof T>;
-  onDragEnd: (event: DragEndEvent) => void;
+  onDragEnd: (event: any) => void;
 };
 
 export type TableProps<T extends object> = {
@@ -29,8 +25,8 @@ export type TableProps<T extends object> = {
   columns: Column<T>[];
   storageKey?: string;
   className?: string;
-  renderTableController?: (props: TableControllerProps<T>) => React.ReactNode;
-  renderTableContent?: (props: TableContentProps<T>) => React.ReactNode;
+  renderController?: (props: RenderControllerProps<T>) => React.ReactNode;
+  renderContent?: (props: RenderContentProps<T>) => React.ReactNode;
 };
 
 export type TableContextType<T extends object> = {
@@ -42,18 +38,19 @@ export type TableContextType<T extends object> = {
 };
 export type SetStateAction<T> = T | ((prevState: T) => T);
 
-export interface TableContentComponent
-  extends React.FC<TableContentProps<any>> {
-  <T extends object>(props: TableContentProps<T>): React.ReactElement;
-}
-
-export interface TableControllerComponent
-  extends React.FC<TableControllerProps<any>> {
-  <T extends object>(props: TableControllerProps<T>): React.ReactElement;
-}
-
 export type TableProviderProps<T extends object> = {
   children: React.ReactNode;
   columns: Column<T>[];
   storageKey?: string;
+};
+
+export type TableContentProps<T extends object> = {
+  data: T[];
+  renderContent?: TableProps<T>["renderContent"];
+};
+
+export type TableWrapperProps<T extends object> = {
+  data: T[];
+  renderController?: TableProps<T>["renderController"];
+  renderContent?: TableProps<T>["renderContent"];
 };

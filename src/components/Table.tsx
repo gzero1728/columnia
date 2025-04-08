@@ -1,7 +1,7 @@
 import { TableProvider } from "../context/context";
 import { TableContent } from "./TableContent";
 import { TableController } from "./TableController";
-import { TableProps } from "../types";
+import { TableProps, TableWrapperProps } from "../types";
 import { useTable } from "../hooks/useTable";
 import { arrayMove } from "../utils";
 
@@ -9,15 +9,15 @@ export const Table = <T extends object>({
   columns,
   data,
   storageKey,
-  renderTableController,
-  renderTableContent,
+  renderController,
+  renderContent,
 }: TableProps<T>) => {
   return (
     <TableProvider columns={columns} storageKey={storageKey}>
       <TableWrapper
         data={data}
-        renderTableController={renderTableController}
-        renderTableContent={renderTableContent}
+        renderController={renderController}
+        renderContent={renderContent}
       />
     </TableProvider>
   );
@@ -25,13 +25,9 @@ export const Table = <T extends object>({
 
 const TableWrapper = <T extends object>({
   data,
-  renderTableController,
-  renderTableContent,
-}: {
-  data: T[];
-  renderTableController?: TableProps<T>["renderTableController"];
-  renderTableContent?: TableProps<T>["renderTableContent"];
-}) => {
+  renderController,
+  renderContent,
+}: TableWrapperProps<T>) => {
   const { columns, selectedColumns, setColumns, setSelectedColumns } =
     useTable<T>();
 
@@ -63,8 +59,8 @@ const TableWrapper = <T extends object>({
 
   return (
     <div>
-      {renderTableController ? (
-        renderTableController({
+      {renderController ? (
+        renderController({
           columns,
           selectedColumns,
           onColumnToggle: handleColumnToggle,
@@ -73,8 +69,8 @@ const TableWrapper = <T extends object>({
       ) : (
         <TableController columns={columns} />
       )}
-      {renderTableContent ? (
-        renderTableContent({
+      {renderContent ? (
+        renderContent({
           data,
           columns: columns.filter((col) => selectedColumns.has(col.key)),
           selectedColumns,

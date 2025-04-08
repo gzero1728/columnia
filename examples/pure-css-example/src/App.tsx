@@ -1,4 +1,9 @@
-import { Table, Column } from "columnia";
+import {
+  Table,
+  Column,
+  RenderControllerProps,
+  RenderContentProps,
+} from "columnia";
 import "./styles.css";
 
 interface User extends Record<string, unknown> {
@@ -63,6 +68,86 @@ const data: User[] = [
 ];
 
 const App = () => {
+  const renderController = ({
+    columns,
+    selectedColumns,
+    onColumnToggle,
+    onReset,
+  }: RenderControllerProps<User>) => (
+    <div className="table-controller">
+      <div className="column-filters">
+        {columns.map((column) => (
+          <label
+            key={String(column.key)}
+            className={`column-filter ${
+              selectedColumns.has(column.key) ? "selected" : ""
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={selectedColumns.has(column.key)}
+              onChange={() => onColumnToggle(column.key)}
+            />
+            {column.label}
+          </label>
+        ))}
+      </div>
+      <button className="reset-button" onClick={onReset}>
+        초기화
+      </button>
+    </div>
+  );
+
+  const renderContent = ({
+    data,
+    columns,
+    onDragEnd,
+  }: RenderContentProps<User>) => (
+    <div className="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th
+                key={String(column.key)}
+                style={{ width: column.width }}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("text/plain", String(column.key));
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const draggedKey = e.dataTransfer.getData("text/plain");
+                  const targetKey = String(column.key);
+                  if (draggedKey !== targetKey) {
+                    onDragEnd({
+                      active: { id: draggedKey },
+                      over: { id: targetKey },
+                    });
+                  }
+                }}
+              >
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, index) => (
+            <tr key={index}>
+              {columns.map((column) => (
+                <td key={String(column.key)}>{String(row[column.key])}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <div className="table-container">
       <h1>Columnia Pure CSS Example</h1>
@@ -70,98 +155,8 @@ const App = () => {
         data={data}
         columns={columns}
         storageKey="pure-css-example"
-        renderTableController={({
-          columns,
-          selectedColumns,
-          onColumnToggle,
-          onReset,
-        }: {
-          columns: Column<User>[];
-          selectedColumns: Set<keyof User>;
-          onColumnToggle: (key: keyof User) => void;
-          onReset: () => void;
-        }) => (
-          <div className="table-controller">
-            <div className="column-filters">
-              {columns.map((column) => (
-                <label
-                  key={String(column.key)}
-                  className={`column-filter ${
-                    selectedColumns.has(column.key) ? "selected" : ""
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedColumns.has(column.key)}
-                    onChange={() => onColumnToggle(column.key)}
-                  />
-                  {column.label}
-                </label>
-              ))}
-            </div>
-            <button className="reset-button" onClick={onReset}>
-              초기화
-            </button>
-          </div>
-        )}
-        renderTableContent={({
-          data,
-          columns,
-          onDragEnd,
-        }: {
-          data: User[];
-          columns: Column<User>[];
-          onDragEnd: (event: any) => void;
-        }) => (
-          <div className="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  {columns.map((column) => (
-                    <th
-                      key={String(column.key)}
-                      style={{ width: column.width }}
-                      draggable
-                      onDragStart={(e) => {
-                        e.dataTransfer.setData(
-                          "text/plain",
-                          String(column.key)
-                        );
-                      }}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                      }}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        const draggedKey = e.dataTransfer.getData("text/plain");
-                        const targetKey = String(column.key);
-                        if (draggedKey !== targetKey) {
-                          onDragEnd({
-                            active: { id: draggedKey },
-                            over: { id: targetKey },
-                          });
-                        }
-                      }}
-                    >
-                      {column.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((row, index) => (
-                  <tr key={index}>
-                    {columns.map((column) => (
-                      <td key={String(column.key)}>
-                        {String(row[column.key])}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        renderController={renderController}
+        renderContent={renderContent}
       />
     </div>
   );

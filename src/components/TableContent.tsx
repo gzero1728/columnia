@@ -15,7 +15,7 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Column, TableProps } from "../types";
+import { Column, TableContentProps } from "../types";
 import { useTable } from "../hooks/useTable";
 
 const SortableHeader = <T extends object>({
@@ -45,15 +45,8 @@ const SortableHeader = <T extends object>({
 
 export const TableContent = <T extends object>({
   data,
-  className,
-  style,
-  renderTableContent,
-}: {
-  data: T[];
-  className?: string;
-  style?: React.CSSProperties;
-  renderTableContent?: TableProps<T>["renderTableContent"];
-}) => {
+  renderContent,
+}: TableContentProps<T>) => {
   const { columns, setColumns, selectedColumns } = useTable<T>();
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -78,8 +71,8 @@ export const TableContent = <T extends object>({
     selectedColumns.has(column.key)
   );
 
-  if (renderTableContent) {
-    return renderTableContent({
+  if (renderContent) {
+    return renderContent({
       data,
       columns: visibleColumns,
       selectedColumns,
@@ -88,40 +81,38 @@ export const TableContent = <T extends object>({
   }
 
   return (
-    <div style={style} className={className}>
-      <div>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <table>
-            <thead>
-              <tr>
-                <SortableContext
-                  items={visibleColumns.map(
-                    (col) => String(col.key) as UniqueIdentifier
-                  )}
-                  strategy={horizontalListSortingStrategy}
-                >
-                  {visibleColumns.map((column) => (
-                    <SortableHeader key={String(column.key)} column={column} />
-                  ))}
-                </SortableContext>
+    <div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <table>
+          <thead>
+            <tr>
+              <SortableContext
+                items={visibleColumns.map(
+                  (col) => String(col.key) as UniqueIdentifier
+                )}
+                strategy={horizontalListSortingStrategy}
+              >
+                {visibleColumns.map((column) => (
+                  <SortableHeader key={String(column.key)} column={column} />
+                ))}
+              </SortableContext>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {visibleColumns.map((column) => (
+                  <td key={String(column.key)}>{String(row[column.key])}</td>
+                ))}
               </tr>
-            </thead>
-            <tbody>
-              {data.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {visibleColumns.map((column) => (
-                    <td key={String(column.key)}>{String(row[column.key])}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </DndContext>
-      </div>
+            ))}
+          </tbody>
+        </table>
+      </DndContext>
     </div>
   );
 };
