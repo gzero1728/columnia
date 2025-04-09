@@ -1,7 +1,7 @@
 import { TableProvider } from "../context/context";
 import { TableContent } from "./TableContent";
 import { TableController } from "./TableController";
-import { TableProps, TableWrapperProps } from "../types";
+import { TableProps, TableWrapperProps, SortableHeaderProps } from "../types";
 import { useTable } from "../hooks/useTable";
 import { arrayMove } from "../utils";
 import type { DragEndEvent } from "@dnd-kit/core";
@@ -15,13 +15,21 @@ import {
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Column } from "../types";
 
+/**
+ * SortableHeader 컴포넌트는 th 태그를 사용하여 테이블 헤더를 렌더링합니다.
+ * 이 컴포넌트는 드래그 앤 드롭 기능을 제공하며, th 태그의 모든 속성을 사용할 수 있습니다.
+ * @example
+ * ```tsx
+ * <SortableHeader column={column}>
+ *   {column.label}
+ * </SortableHeader>
+ * ```
+ */
 export const SortableHeader = <T extends object>({
   column,
-}: {
-  column: Column<T>;
-}) => {
+  children,
+}: SortableHeaderProps<T>) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: String(column.key) });
   const style = {
@@ -37,7 +45,7 @@ export const SortableHeader = <T extends object>({
       {...listeners}
       scope="col"
     >
-      {column.label}
+      {children || column.label}
     </th>
   );
 };

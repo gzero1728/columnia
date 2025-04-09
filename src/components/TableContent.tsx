@@ -13,8 +13,7 @@ import {
   sortableKeyboardCoordinates,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Column, TableContentProps } from "../types";
+import { TableContentProps } from "../types";
 import { useTable } from "../hooks/useTable";
 import { SortableHeader } from "./Table";
 

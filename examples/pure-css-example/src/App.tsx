@@ -3,6 +3,7 @@ import {
   Column,
   RenderControllerProps,
   RenderContentProps,
+  SortableHeader,
 } from "columnia";
 import "./styles.css";
 
@@ -98,11 +99,7 @@ const App = () => {
     </div>
   );
 
-  const renderContent = ({
-    data,
-    columns,
-    SortableHeader,
-  }: RenderContentProps<User>) => (
+  const renderContent = ({ data, columns }: RenderContentProps<User>) => (
     <div className="table-wrapper">
       <table>
         <thead>

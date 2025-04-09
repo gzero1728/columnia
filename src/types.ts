@@ -58,4 +58,4 @@ export type TableWrapperProps<T extends object> = {
 export type SortableHeaderProps<T extends object> = {
   column: Column<T>;
   children?: React.ReactNode;
-};
+} & React.ThHTMLAttributes<HTMLTableCellElement>;
