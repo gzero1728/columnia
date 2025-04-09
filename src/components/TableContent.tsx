@@ -11,37 +11,12 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Column, TableContentProps } from "../types";
 import { useTable } from "../hooks/useTable";
-
-const SortableHeader = <T extends object>({
-  column,
-}: {
-  column: Column<T>;
-}) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: String(column.key) });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <th
-      ref={setNodeRef}
-      style={{ ...style, width: column.width }}
-      {...attributes}
-      {...listeners}
-      scope="col"
-    >
-      {column.label}
-    </th>
-  );
-};
+import { SortableHeader } from "./Table";
 
 export const TableContent = <T extends object>({
   data,
@@ -76,7 +51,7 @@ export const TableContent = <T extends object>({
       data,
       columns: visibleColumns,
       selectedColumns,
-      onDragEnd: handleDragEnd,
+      SortableHeader,
     });
   }
 

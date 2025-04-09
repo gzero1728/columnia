@@ -101,37 +101,14 @@ const App = () => {
   const renderContent = ({
     data,
     columns,
-    onDragEnd,
+    SortableHeader,
   }: RenderContentProps<User>) => (
     <div className="table-wrapper">
       <table>
         <thead>
           <tr>
             {columns.map((column) => (
-              <th
-                key={String(column.key)}
-                style={{ width: column.width }}
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData("text/plain", String(column.key));
-                }}
-                onDragOver={(e) => {
-                  e.preventDefault();
-                }}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const draggedKey = e.dataTransfer.getData("text/plain");
-                  const targetKey = String(column.key);
-                  if (draggedKey !== targetKey) {
-                    onDragEnd({
-                      active: { id: draggedKey },
-                      over: { id: targetKey },
-                    });
-                  }
-                }}
-              >
-                {column.label}
-              </th>
+              <SortableHeader key={String(column.key)} column={column} />
             ))}
           </tr>
         </thead>

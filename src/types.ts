@@ -17,7 +17,7 @@ export type RenderContentProps<T extends object> = {
   data: T[];
   columns: Column<T>[];
   selectedColumns: Set<keyof T>;
-  onDragEnd: (event: any) => void;
+  SortableHeader: React.ComponentType<SortableHeaderProps<T>>;
 };
 
 export type TableProps<T extends object> = {
@@ -53,4 +53,9 @@ export type TableWrapperProps<T extends object> = {
   data: T[];
   renderController?: TableProps<T>["renderController"];
   renderContent?: TableProps<T>["renderContent"];
+};
+
+export type SortableHeaderProps<T extends object> = {
+  column: Column<T>;
+  children?: React.ReactNode;
 };

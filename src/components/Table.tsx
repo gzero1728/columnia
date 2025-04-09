@@ -4,6 +4,43 @@ import { TableController } from "./TableController";
 import { TableProps, TableWrapperProps } from "../types";
 import { useTable } from "../hooks/useTable";
 import { arrayMove } from "../utils";
+import type { DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Column } from "../types";
+
+export const SortableHeader = <T extends object>({
+  column,
+}: {
+  column: Column<T>;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: String(column.key) });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <th
+      ref={setNodeRef}
+      style={{ ...style, width: column.width }}
+      {...attributes}
+      {...listeners}
+      scope="col"
+    >
+      {column.label}
+    </th>
+  );
+};
 
 export const Table = <T extends object>({
   columns,
@@ -46,7 +83,7 @@ const TableWrapper = <T extends object>({
     setColumns(columns);
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over?.id) {
       const oldIndex = columns.findIndex(
@@ -56,6 +93,13 @@ const TableWrapper = <T extends object>({
       setColumns(arrayMove(columns, oldIndex, newIndex));
     }
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   return (
     <div>
@@ -70,12 +114,18 @@ const TableWrapper = <T extends object>({
         <TableController columns={columns} />
       )}
       {renderContent ? (
-        renderContent({
-          data,
-          columns: columns.filter((col) => selectedColumns.has(col.key)),
-          selectedColumns,
-          onDragEnd: handleDragEnd,
-        })
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          {renderContent({
+            data,
+            columns: columns.filter((col) => selectedColumns.has(col.key)),
+            selectedColumns,
+            SortableHeader: SortableHeader,
+          })}
+        </DndContext>
       ) : (
         <TableContent data={data} />
       )}
