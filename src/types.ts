@@ -17,14 +17,13 @@ export type RenderContentProps<T extends object> = {
   data: T[];
   columns: Column<T>[];
   selectedColumns: Set<keyof T>;
-  SortableHeader: React.ComponentType<SortableHeaderProps<T>>;
+  TableHeader: React.ComponentType<TableHeaderProps<T>>;
 };
 
 export type TableProps<T extends object> = {
   data: T[];
   columns: Column<T>[];
-  storageKey?: string;
-  className?: string;
+  storageKey: string;
   renderController?: (props: RenderControllerProps<T>) => React.ReactNode;
   renderContent?: (props: RenderContentProps<T>) => React.ReactNode;
 };
@@ -36,6 +35,7 @@ export type TableContextType<T extends object> = {
   setSelectedColumns: (columns: Set<keyof T>) => void;
   storageKey?: string;
 };
+
 export type SetStateAction<T> = T | ((prevState: T) => T);
 
 export type TableProviderProps<T extends object> = {
@@ -44,18 +44,23 @@ export type TableProviderProps<T extends object> = {
   storageKey?: string;
 };
 
-export type TableContentProps<T extends object> = {
-  data: T[];
-  renderContent?: TableProps<T>["renderContent"];
-};
-
 export type TableWrapperProps<T extends object> = {
   data: T[];
   renderController?: TableProps<T>["renderController"];
   renderContent?: TableProps<T>["renderContent"];
 };
 
-export type SortableHeaderProps<T extends object> = {
+export type TableHeaderProps<T extends object> = {
   column: Column<T>;
   children?: React.ReactNode;
 } & React.ThHTMLAttributes<HTMLTableCellElement>;
+
+export type TableControllerProps<T extends object> = {
+  columns: Column<T>[];
+  renderController?: TableProps<T>["renderController"];
+};
+
+export type TableContentProps<T extends object> = {
+  data: T[];
+  renderContent?: (props: RenderContentProps<T>) => React.ReactNode;
+};

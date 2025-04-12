@@ -13,9 +13,9 @@ import {
   sortableKeyboardCoordinates,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { TableContentProps } from "../types";
 import { useTable } from "../hooks/useTable";
-import { SortableHeader } from "./Table";
+import { TableHeader } from "./TableHeader";
+import { TableContentProps } from "../types";
 
 export const TableContent = <T extends object>({
   data,
@@ -50,7 +50,7 @@ export const TableContent = <T extends object>({
       data,
       columns: visibleColumns,
       selectedColumns,
-      SortableHeader,
+      TableHeader,
     });
   }
 
@@ -71,7 +71,7 @@ export const TableContent = <T extends object>({
                 strategy={horizontalListSortingStrategy}
               >
                 {visibleColumns.map((column) => (
-                  <SortableHeader key={String(column.key)} column={column} />
+                  <TableHeader key={String(column.key)} column={column} />
                 ))}
               </SortableContext>
             </tr>

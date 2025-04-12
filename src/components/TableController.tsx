@@ -1,10 +1,5 @@
 import { useTable } from "../hooks/useTable";
-import { Column, TableProps } from "../types";
-
-type TableControllerProps<T extends object> = {
-  columns: Column<T>[];
-  renderController?: TableProps<T>["renderController"];
-};
+import { TableControllerProps } from "../types";
 
 export const TableController = <T extends object>({
   columns,
