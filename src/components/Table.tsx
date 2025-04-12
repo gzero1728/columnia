@@ -4,9 +4,9 @@ import { TableController } from "./TableController";
 import { TableProps } from "../types";
 
 export const Table = <T extends object>({
-  columns,
-  data,
-  storageKey,
+  columns = [],
+  data = [],
+  storageKey = "columnia-table",
   renderController,
   renderContent,
 }: TableProps<T>) => {

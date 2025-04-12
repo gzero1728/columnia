@@ -5,6 +5,12 @@ import { Table } from "./components/Table";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Table data={[]} columns={[]} storageKey="" />
+    <Table
+      data={[]}
+      columns={[]}
+      storageKey=""
+      renderController={() => <></>}
+      renderContent={() => <></>}
+    />
   </React.StrictMode>
 );

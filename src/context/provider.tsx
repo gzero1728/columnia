@@ -7,8 +7,13 @@ export function TableProvider<T extends object>({
   columns: initialColumns,
   storageKey,
 }: TableProviderProps<T>) {
-  // 로컬 스토리지에서 초기 상태를 가져오는 함수
-  const getInitialState = () => {
+  const initialState = getInitialState();
+  const [columns, setColumns] = useState<ColumnType<T>[]>(initialState.columns);
+  const [selectedColumns, setSelectedColumns] = useState<Set<keyof T>>(
+    initialState.selectedColumns
+  );
+
+  function getInitialState() {
     if (!storageKey) {
       return {
         columns: initialColumns,
@@ -65,13 +70,7 @@ export function TableProvider<T extends object>({
       columns: initialColumns,
       selectedColumns: new Set(initialColumns.map((col) => col.key)),
     };
-  };
-
-  const initialState = getInitialState();
-  const [columns, setColumns] = useState<ColumnType<T>[]>(initialState.columns);
-  const [selectedColumns, setSelectedColumns] = useState<Set<keyof T>>(
-    initialState.selectedColumns
-  );
+  }
 
   // 선택된 컬럼이 변경될 때 저장
   useEffect(() => {
@@ -115,15 +114,13 @@ export function TableProvider<T extends object>({
 
   const value: TableContextType<T> = {
     columns,
-    setColumns,
     selectedColumns,
-    setSelectedColumns,
     storageKey,
+    setColumns,
+    setSelectedColumns,
   };
 
   return (
-    <TableContext.Provider value={value as unknown as TableContextType<object>}>
-      {children}
-    </TableContext.Provider>
+    <TableContext.Provider value={value}>{children}</TableContext.Provider>
   );
 }

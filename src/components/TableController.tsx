@@ -5,7 +5,7 @@ export const TableController = <T extends object>({
   columns,
   renderController,
 }: TableControllerProps<T>) => {
-  const { selectedColumns, setSelectedColumns, setColumns, storageKey } =
+  const { selectedColumns, storageKey, setSelectedColumns, setColumns } =
     useTable<T>();
 
   const handleColumnToggle = (columnKey: keyof T) => {

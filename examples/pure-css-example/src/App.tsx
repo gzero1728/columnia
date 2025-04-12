@@ -46,7 +46,9 @@ const App = () => {
         <thead>
           <tr>
             {columns.map((column) => (
-              <TableHeader key={String(column.key)} column={column} />
+              <TableHeader key={String(column.key)} column={column}>
+                {column.label}
+              </TableHeader>
             ))}
           </tr>
         </thead>
@@ -66,7 +68,7 @@ const App = () => {
   return (
     <div className="table-container">
       <h1>Columnia Pure CSS Example</h1>
-      <Table<User>
+      <Table
         data={data}
         columns={columns}
         storageKey="pure-css-example"

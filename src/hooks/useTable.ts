@@ -7,5 +7,5 @@ export const useTable = <T extends object>() => {
   if (!context) {
     throw new Error("useTable must be used within a TableProvider");
   }
-  return context as unknown as TableContextType<T>;
+  return context as TableContextType<T>;
 };
