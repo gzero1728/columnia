@@ -16,3 +16,5 @@ npm install columnia
 # 또는
 yarn add columnia
 ```
+
+## 사용방법
