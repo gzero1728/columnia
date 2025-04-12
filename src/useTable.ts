@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { TableContextType, ColumnType, TableProviderProps } from "../types";
-import { TableContext } from ".";
+import { useEffect, useState } from "react";
+import { UseTableProps, UseTableReturnType } from "./types";
+import { ColumnType } from "./types";
 
-export function TableProvider<T extends object>({
-  children,
-  columns: initialColumns,
-  storageKey,
-}: TableProviderProps<T>) {
+export const useTable = <T extends object>(
+  options: UseTableProps<T>
+): UseTableReturnType<T> => {
+  const { columns: initialColumns, storageKey } = options;
+
   const initialState = getInitialState();
   const [columns, setColumns] = useState<ColumnType<T>[]>(initialState.columns);
   const [selectedColumns, setSelectedColumns] = useState<Set<keyof T>>(
@@ -72,6 +72,24 @@ export function TableProvider<T extends object>({
     };
   }
 
+  function onToggleColumn(columnKey: keyof T) {
+    const newSelectedColumns = new Set(selectedColumns);
+    if (newSelectedColumns.has(columnKey)) {
+      newSelectedColumns.delete(columnKey);
+    } else {
+      newSelectedColumns.add(columnKey);
+    }
+    setSelectedColumns(newSelectedColumns);
+  }
+
+  function onResetColumns() {
+    setSelectedColumns(new Set(columns.map((col) => col.key)));
+    setColumns(columns);
+    if (storageKey) {
+      localStorage.removeItem(storageKey);
+    }
+  }
+
   // 선택된 컬럼이 변경될 때 저장
   useEffect(() => {
     if (storageKey) {
@@ -112,15 +130,10 @@ export function TableProvider<T extends object>({
     }
   }, [columns, storageKey]);
 
-  const value: TableContextType<T> = {
-    columns,
+  return {
+    visibleColumns: columns.filter((col) => selectedColumns.has(col.key)),
     selectedColumns,
-    storageKey,
-    setColumns,
-    setSelectedColumns,
+    onToggleColumn,
+    onResetColumns,
   };
-
-  return (
-    <TableContext.Provider value={value}>{children}</TableContext.Provider>
-  );
-}
+};

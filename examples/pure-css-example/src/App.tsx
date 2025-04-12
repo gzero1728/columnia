@@ -1,82 +1,66 @@
-import {
-  Table,
-  RenderControllerProps,
-  RenderContentProps,
-  TableHeader,
-} from "columnia";
-import "./styles.css";
+import { useTable } from "columnia";
+
 import { User } from "./type";
 import { data } from "./data";
 import { columns } from "./column";
+import { ColumnType } from "columnia";
+import "./styles.css";
 
-const App = () => {
-  const renderController = ({
-    columns,
-    selectedColumns,
-    onColumnToggle,
-    onReset,
-  }: RenderControllerProps<User>) => (
-    <div className="table-controller">
-      <div className="column-filters">
-        {columns.map((column) => (
-          <label
-            key={String(column.key)}
-            className={`column-filter ${
-              selectedColumns.has(column.key) ? "selected" : ""
-            }`}
-          >
-            <input
-              type="checkbox"
-              checked={selectedColumns.has(column.key)}
-              onChange={() => onColumnToggle(column.key)}
-            />
-            {column.label}
-          </label>
-        ))}
-      </div>
-      <button className="reset-button" onClick={onReset}>
-        초기화
-      </button>
-    </div>
-  );
-
-  const renderContent = ({ data, columns }: RenderContentProps<User>) => (
-    <div className="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <TableHeader key={String(column.key)} column={column}>
-                {column.label}
-              </TableHeader>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr key={index}>
-              {columns.map((column) => (
-                <td key={String(column.key)}>{String(row[column.key])}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+const TableContent = () => {
+  const { visibleColumns, selectedColumns, onToggleColumn, onResetColumns } =
+    useTable<User>({ columns, storageKey: "pure-css-example" });
 
   return (
     <div className="table-container">
       <h1>Columnia Pure CSS Example</h1>
-      <Table
-        data={data}
-        columns={columns}
-        storageKey="pure-css-example"
-        renderController={renderController}
-        renderContent={renderContent}
-      />
+      <div className="table-controller">
+        <div className="column-filters">
+          {columns.map((column: ColumnType<User>) => (
+            <label
+              key={String(column.key)}
+              className={`column-filter ${
+                selectedColumns.has(column.key) ? "selected" : ""
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={selectedColumns.has(column.key)}
+                onChange={() => onToggleColumn(column.key)}
+              />
+              {column.label}
+            </label>
+          ))}
+        </div>
+        <button className="reset-button" onClick={onResetColumns}>
+          초기화
+        </button>
+      </div>
+      <div className="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              {visibleColumns.map((column: ColumnType<User>) => (
+                <th key={String(column.key)}>{column.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, index) => (
+              <tr key={index}>
+                {visibleColumns.map((column: ColumnType<User>) => (
+                  <td key={String(column.key)}>{String(row[column.key])}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
+};
+
+const App = () => {
+  return <TableContent />;
 };
 
 export default App;
