@@ -39,7 +39,7 @@ const TableContent = () => {
           <thead>
             <tr>
               {visibleColumns.map((column: ColumnType<User>) => (
-                <th key={String(column.key)}>{column.label}</th>
+                <th key={column.key}>{column.label}</th>
               ))}
             </tr>
           </thead>
@@ -47,7 +47,7 @@ const TableContent = () => {
             {data.map((row, index) => (
               <tr key={index}>
                 {visibleColumns.map((column: ColumnType<User>) => (
-                  <td key={String(column.key)}>{String(row[column.key])}</td>
+                  <td key={column.key}>{row[column.key] as React.ReactNode}</td>
                 ))}
               </tr>
             ))}
