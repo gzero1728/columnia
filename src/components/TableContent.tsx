@@ -45,15 +45,6 @@ export const TableContent = <T extends object>({
     selectedColumns.has(column.key)
   );
 
-  if (renderContent) {
-    return renderContent({
-      data,
-      columns: visibleColumns,
-      selectedColumns,
-      TableHeader,
-    });
-  }
-
   return (
     <div>
       <DndContext
@@ -61,31 +52,40 @@ export const TableContent = <T extends object>({
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <table>
-          <thead>
-            <tr>
-              <SortableContext
-                items={visibleColumns.map(
-                  (col) => String(col.key) as UniqueIdentifier
-                )}
-                strategy={horizontalListSortingStrategy}
-              >
-                {visibleColumns.map((column) => (
-                  <TableHeader key={String(column.key)} column={column} />
-                ))}
-              </SortableContext>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {visibleColumns.map((column) => (
-                  <td key={String(column.key)}>{String(row[column.key])}</td>
-                ))}
+        {renderContent ? (
+          renderContent({
+            data,
+            columns: visibleColumns,
+            selectedColumns,
+            TableHeader,
+          })
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <SortableContext
+                  items={visibleColumns.map(
+                    (col) => String(col.key) as UniqueIdentifier
+                  )}
+                  strategy={horizontalListSortingStrategy}
+                >
+                  {visibleColumns.map((column) => (
+                    <TableHeader key={String(column.key)} column={column} />
+                  ))}
+                </SortableContext>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {visibleColumns.map((column) => (
+                    <td key={String(column.key)}>{String(row[column.key])}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </DndContext>
     </div>
   );

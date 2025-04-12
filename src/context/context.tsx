@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { TableContextType, Column, TableProviderProps } from "../types";
+import { TableContextType, ColumnType, TableProviderProps } from "../types";
 import { TableContext } from "./createContext";
 
 export function TableProvider<T extends object>({
@@ -68,7 +68,7 @@ export function TableProvider<T extends object>({
   };
 
   const initialState = getInitialState();
-  const [columns, setColumns] = useState<Column<T>[]>(initialState.columns);
+  const [columns, setColumns] = useState<ColumnType<T>[]>(initialState.columns);
   const [selectedColumns, setSelectedColumns] = useState<Set<keyof T>>(
     initialState.selectedColumns
   );

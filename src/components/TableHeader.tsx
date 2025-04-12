@@ -27,7 +27,7 @@ export const TableHeader = <T extends object>({
   return (
     <th
       ref={setNodeRef}
-      style={{ ...style, width: column.width }}
+      style={{ ...style }}
       {...attributes}
       {...listeners}
       scope="col"

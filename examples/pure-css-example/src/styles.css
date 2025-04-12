@@ -78,7 +78,6 @@ body {
   background: #e9ecef;
 }
 
-/* Table styles */
 .table-wrapper {
   overflow-x: auto;
   border-radius: 6px;
@@ -91,6 +90,16 @@ table {
 }
 
 td {
+  padding: 1rem;
+  background: #f8f9fa;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+  cursor: move;
+  user-select: none;
+}
+
+th {
   padding: 1rem;
   background: #f8f9fa;
   font-weight: 600;
