@@ -10,7 +10,7 @@ export type UseTableProps<T extends object> = {
 
 export type UseTableReturnType<T extends object> = {
   visibleColumns: ColumnType<T>[];
-  selectedColumns: Set<keyof T>;
+  isSelected: (columnKey: keyof T) => boolean;
   onToggleColumn: (columnKey: keyof T) => void;
   onResetColumns: () => void;
 };
