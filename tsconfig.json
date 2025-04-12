@@ -19,8 +19,9 @@
     "esModuleInterop": true,
     "declaration": true,
     "declarationDir": "dist",
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "removeComments": false,
+    "types": ["vite/client"]
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "vite.config.ts"]
 }

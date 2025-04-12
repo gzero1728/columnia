@@ -29,6 +29,9 @@ body {
   padding: 1rem;
   background: #f8f9fa;
   border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .column-filters {
@@ -78,7 +81,6 @@ body {
   background: #e9ecef;
 }
 
-/* Table styles */
 .table-wrapper {
   overflow-x: auto;
   border-radius: 6px;
@@ -88,6 +90,16 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
+}
+
+td {
+  padding: 1rem;
+  background: #f8f9fa;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+  cursor: move;
+  user-select: none;
 }
 
 th {

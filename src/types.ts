@@ -1,43 +1,55 @@
-export type Column<T> = {
+export type ColumnType<T> = {
   key: keyof T;
   label: string;
-  width?: number;
-  sortable?: boolean;
-  hidden?: boolean;
+};
+
+export type RenderControllerProps<T extends object> = {
+  columns: ColumnType<T>[];
+  selectedColumns: Set<keyof T>;
+  onColumnToggle: (columnKey: keyof T) => void;
+  onReset: () => void;
+};
+
+export type RenderContentProps<T extends object> = {
+  data: T[];
+  columns: ColumnType<T>[];
+  selectedColumns: Set<keyof T>;
+  TableHeader: React.ComponentType<TableHeaderProps<T>>;
 };
 
 export type TableProps<T extends object> = {
   data: T[];
-  columns: Column<T>[];
-  storageKey?: string;
-  className?: string;
-  style?: React.CSSProperties;
-  theme?: {
-    primary?: string;
-    secondary?: string;
-    background?: string;
-    text?: string;
-    border?: string;
-  };
-  renderTableController?: (props: {
-    columns: Column<T>[];
-    selectedColumns: Set<keyof T>;
-    onColumnToggle: (columnKey: keyof T) => void;
-    onReset: () => void;
-  }) => React.ReactNode;
-  renderTableContent?: (props: {
-    data: T[];
-    columns: Column<T>[];
-    selectedColumns: Set<keyof T>;
-    onDragEnd: (event: any) => void;
-  }) => React.ReactNode;
+  columns: ColumnType<T>[];
+  storageKey: string;
+  renderController: (props: RenderControllerProps<T>) => React.ReactNode;
+  renderContent: (props: RenderContentProps<T>) => React.ReactNode;
 };
 
 export type TableContextType<T extends object> = {
-  columns: Column<T>[];
-  setColumns: (columns: Column<T>[]) => void;
+  columns: ColumnType<T>[];
   selectedColumns: Set<keyof T>;
+  storageKey: string;
+  setColumns: (columns: ColumnType<T>[]) => void;
   setSelectedColumns: (columns: Set<keyof T>) => void;
-  theme: TableProps<T>["theme"];
-  storageKey?: string;
+};
+
+export type TableProviderProps<T extends object> = {
+  children: React.ReactNode;
+  columns: ColumnType<T>[];
+  storageKey: string;
+};
+
+export type TableHeaderProps<T extends object> = {
+  column: ColumnType<T>;
+  children: React.ReactNode;
+} & React.ThHTMLAttributes<HTMLTableCellElement>;
+
+export type TableControllerProps<T extends object> = {
+  columns: ColumnType<T>[];
+  renderController: TableProps<T>["renderController"];
+};
+
+export type TableContentProps<T extends object> = {
+  data: T[];
+  renderContent: (props: RenderContentProps<T>) => React.ReactNode;
 };
