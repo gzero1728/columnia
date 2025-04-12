@@ -1,4 +1,4 @@
-import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
   DndContext,
   closestCenter,
@@ -7,12 +7,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useTable } from "../hooks/useTable";
 import { TableHeader } from "./TableHeader";
 import { TableContentProps } from "../types";
@@ -46,47 +41,17 @@ export const TableContent = <T extends object>({
   );
 
   return (
-    <div>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
-        {renderContent ? (
-          renderContent({
-            data,
-            columns: visibleColumns,
-            selectedColumns,
-            TableHeader,
-          })
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <SortableContext
-                  items={visibleColumns.map(
-                    (col) => String(col.key) as UniqueIdentifier
-                  )}
-                  strategy={horizontalListSortingStrategy}
-                >
-                  {visibleColumns.map((column) => (
-                    <TableHeader key={String(column.key)} column={column} />
-                  ))}
-                </SortableContext>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {visibleColumns.map((column) => (
-                    <td key={String(column.key)}>{String(row[column.key])}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </DndContext>
-    </div>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      {renderContent({
+        data,
+        columns: visibleColumns,
+        selectedColumns,
+        TableHeader,
+      })}
+    </DndContext>
   );
 };

@@ -26,30 +26,10 @@ export const TableController = <T extends object>({
     }
   };
 
-  if (renderController) {
-    return renderController({
-      columns,
-      selectedColumns,
-      onColumnToggle: handleColumnToggle,
-      onReset: handleReset,
-    });
-  }
-
-  return (
-    <div>
-      <div>
-        {columns.map((column) => (
-          <label key={String(column.key)}>
-            <input
-              type="checkbox"
-              checked={selectedColumns.has(column.key)}
-              onChange={() => handleColumnToggle(column.key)}
-            />
-            {column.label}
-          </label>
-        ))}
-      </div>
-      <button onClick={handleReset}>초기화</button>
-    </div>
-  );
+  return renderController({
+    columns,
+    selectedColumns,
+    onColumnToggle: handleColumnToggle,
+    onReset: handleReset,
+  });
 };

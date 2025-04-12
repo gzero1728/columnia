@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { TableContext } from "../context/createContext";
+import { TableContext } from "../context";
 import { TableContextType } from "../types";
 
 export const useTable = <T extends object>() => {

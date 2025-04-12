@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TableContextType, ColumnType, TableProviderProps } from "../types";
-import { TableContext } from "./createContext";
+import { TableContext } from ".";
 
 export function TableProvider<T extends object>({
   children,
