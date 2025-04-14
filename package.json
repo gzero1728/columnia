@@ -1,7 +1,7 @@
 {
   "name": "columnia",
   "private": false,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -20,7 +20,7 @@
     "dev": "vite",
     "build": "tsup src/index.ts --format esm,cjs --dts --external react",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "test": "vitest"
+    "test": "vitest run src/**/*.test.ts"
   },
   "dependencies": {
     "react": "^18.2.0",
