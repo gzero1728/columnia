@@ -1,4 +1,2 @@
-export { Table } from "./components/Table";
-export { TableHeader } from "./components/TableHeader";
-export type { TableHeaderProps } from "./types";
+export * from "./useTable";
 export type * from "./types";
