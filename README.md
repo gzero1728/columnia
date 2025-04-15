@@ -2,26 +2,26 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-React 애플리케이션을 위한 테이블 컬럼 관리 훅입니다.
-컬럼 선택/해제 기능과 설정 저장 기능을 제공하며, UI 구현은 사용자에게 위임합니다.
+A React hook for managing table columns in React applications.
+It provides column selection/deselection functionality and settings persistence, while leaving UI implementation to the user.
 
-## 주요 기능
+## Key Features
 
-- 📊 컬럼 관리
-  - 컬럼 선택/해제 기능
-  - 선택된 컬럼 설정 저장/불러오기 (localStorage)
+- 📊 Column Management
+  - Column selection/deselection
+  - Save/load selected column settings (localStorage)
 
-## 설치
+## Installation
 
 ```bash
 npm install columnia
-# 또는
+# or
 yarn add columnia
 ```
 
-## 사용방법
+## Usage
 
-### 기본 사용법
+### Basic Usage
 
 ```tsx
 import { useTable } from "columnia";
@@ -34,20 +34,20 @@ interface User {
 
 function TableComponent() {
   const columns = [
-    { key: "name", label: "이름" },
-    { key: "age", label: "나이" },
-    { key: "email", label: "이메일" },
+    { key: "name", label: "Name" },
+    { key: "age", label: "Age" },
+    { key: "email", label: "Email" },
   ];
 
   const { visibleColumns, isSelected, onToggleColumn, onResetColumns } =
     useTable<User>({
       columns,
-      storageKey: "my-table-columns", // localStorage에 저장될 키
+      storageKey: "my-table-columns", // Key for localStorage
     });
 
   return (
     <div>
-      {/* 컬럼 선택 UI */}
+      {/* Column Selection UI */}
       <div>
         {columns.map((column) => (
           <label key={column.key}>
@@ -59,10 +59,10 @@ function TableComponent() {
             {column.label}
           </label>
         ))}
-        <button onClick={onResetColumns}>초기화</button>
+        <button onClick={onResetColumns}>Reset</button>
       </div>
 
-      {/* 테이블 */}
+      {/* Table */}
       <table>
         <thead>
           <tr>
@@ -71,7 +71,15 @@ function TableComponent() {
             ))}
           </tr>
         </thead>
-        <tbody>{/* 테이블 데이터 */}</tbody>
+        <tbody>
+          {data.map((row, index) => (
+            <tr key={index}>
+              {visibleColumns.map((column) => (
+                <td key={column.key}>{row[column.key]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
@@ -84,27 +92,27 @@ function TableComponent() {
 
 ```typescript
 const {
-  visibleColumns, // 현재 보이는 컬럼들
-  isSelected, // 컬럼이 선택되었는지 확인하는 함수
-  onToggleColumn, // 컬럼 선택/해제 토글 함수
-  onResetColumns, // 컬럼 선택 초기화 함수
+  visibleColumns, // Currently visible columns
+  isSelected, // Function to check if a column is selected
+  onToggleColumn, // Function to toggle column selection
+  onResetColumns, // Function to reset column selection to default
 } = useTable<T>({
-  columns: Column < T > [], // 컬럼 정의 배열
-  storageKey: string, // localStorage 키 (선택사항)
+  columns: Column < T > [], // Array of column definitions
+  storageKey: string, // localStorage key (optional)
 });
 ```
 
-#### Column 타입
+#### Column Type
 
 ```typescript
 interface Column<T> {
-  key: keyof T; // 컬럼 키 (데이터 객체의 키)
-  label: string; // 컬럼 표시 이름
+  key: keyof T; // Column key (key of data object)
+  label: string; // Column display name
 }
 ```
 
-### 특징
+### Features
 
-- 제네릭 타입 지원: 테이블 데이터의 타입을 명시적으로 지정할 수 있습니다.
-- 자동 저장: 컬럼 선택 상태가 변경될 때마다 자동으로 localStorage에 저장됩니다.
-- 초기화 기능: `onResetColumns`로 모든 컬럼을 초기 상태로 되돌릴 수 있습니다.
+- Generic Type Support: Explicitly specify the type of table data
+- Automatic Persistence: Column selection state is automatically saved to localStorage
+- Reset Functionality: Reset all columns to their initial state with `onResetColumns`
