@@ -37,19 +37,23 @@ jobs:
       - name: Determine version bump type
         id: bump-type
         run: |
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_BODY="${{ github.event.pull_request.body }}"
-          COMBINED_TEXT="$PR_TITLE $PR_BODY"
+          # PR 라벨 목록 가져오기
+          PR_LABELS="${{ toJSON(github.event.pull_request.labels.*.name) }}"
 
-          if [[ $COMBINED_TEXT == *"BREAKING CHANGE"* || $COMBINED_TEXT == *"major"* ]]; then
+          if [[ $PR_LABELS == *"major"* ]]; then
             echo "TYPE=major" >> $GITHUB_OUTPUT
             echo "LEVEL=major" >> $GITHUB_OUTPUT
-          elif [[ $COMBINED_TEXT == *"feat"* || $COMBINED_TEXT == *"minor"* ]]; then
+          elif [[ $PR_LABELS == *"minor"* ]]; then
             echo "TYPE=minor" >> $GITHUB_OUTPUT
             echo "LEVEL=minor" >> $GITHUB_OUTPUT
-          else
+          elif [[ $PR_LABELS == *"patch"* ]]; then
             echo "TYPE=patch" >> $GITHUB_OUTPUT
             echo "LEVEL=patch" >> $GITHUB_OUTPUT
+          else
+            # 기본값은 patch로 설정
+            echo "TYPE=patch" >> $GITHUB_OUTPUT
+            echo "LEVEL=patch" >> $GITHUB_OUTPUT
+            echo "::warning::No version bump label found. Defaulting to patch."
           fi
 
       - name: Bump version
