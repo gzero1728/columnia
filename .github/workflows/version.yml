@@ -1,0 +1,101 @@
+name: Version and Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  version-and-release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Determine version bump type
+        id: bump-type
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_BODY="${{ github.event.pull_request.body }}"
+          COMBINED_TEXT="$PR_TITLE $PR_BODY"
+
+          if [[ $COMBINED_TEXT == *"BREAKING CHANGE"* || $COMBINED_TEXT == *"major"* ]]; then
+            echo "TYPE=major" >> $GITHUB_OUTPUT
+            echo "LEVEL=major" >> $GITHUB_OUTPUT
+          elif [[ $COMBINED_TEXT == *"feat"* || $COMBINED_TEXT == *"minor"* ]]; then
+            echo "TYPE=minor" >> $GITHUB_OUTPUT
+            echo "LEVEL=minor" >> $GITHUB_OUTPUT
+          else
+            echo "TYPE=patch" >> $GITHUB_OUTPUT
+            echo "LEVEL=patch" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Bump version
+        id: version
+        run: |
+          NEW_VERSION=$(npm version ${{ steps.bump-type.outputs.TYPE }} --no-git-tag-version)
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+          # Commit the version change
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to ${NEW_VERSION} [skip ci]"
+
+          # Create an annotated tag
+          git tag -a ${NEW_VERSION} -m "Release ${NEW_VERSION}"
+
+          # Push both commit and tag
+          git push
+          git push --tags
+
+      - name: Generate release notes
+        id: release-notes
+        run: |
+          # Get all commits since last tag (excluding the version bump we just made)
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            COMMITS=$(git log --pretty=format:"* %s (%h)")
+          else
+            COMMITS=$(git log ${PREVIOUS_TAG}..HEAD^ --pretty=format:"* %s (%h)")
+          fi
+
+          echo "COMMITS<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.new_version }}
+          release_name: Release ${{ steps.version.outputs.new_version }}
+          body: |
+            ## Changes in this release
+
+            ${{ steps.release-notes.outputs.COMMITS }}
+
+            ## Bump type: ${{ steps.bump-type.outputs.LEVEL }}
+          draft: false
+          prerelease: false
