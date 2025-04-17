@@ -2,12 +2,15 @@
   "name": "columnia",
   "private": false,
   "version": "1.0.0",
+  "description": "A React hook for managing table columns in React applications.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -16,6 +19,20 @@
       "require": "./dist/index.js"
     }
   },
+  "keywords": [
+    "react",
+    "hooks",
+    "table",
+    "columns",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/columnia.git"
+  },
+  "author": "Jiyeong Gwon <gzero1728@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/gzero1728/columnia#readme",
   "scripts": {
     "dev": "vite",
     "build": "tsup src/index.ts --format esm,cjs --dts --external react",
@@ -41,6 +58,6 @@
     "vitest": "^3.1.1"
   },
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": ">=18"
   }
 }

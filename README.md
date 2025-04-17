@@ -1,20 +1,118 @@
 # Columnia
 
-React 애플리케이션을 위한 테이블 컬럼 관리 훅입니다.
-컬럼 선택/해제 기능과 설정 저장 기능을 제공하며, UI 구현은 사용자에게 위임합니다.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 주요 기능
+A React hook for managing table columns in React applications.
+It provides column selection/deselection functionality and settings persistence, while leaving UI implementation to the user.
 
-- 📊 컬럼 관리
-  - 컬럼 선택/해제 기능
-  - 선택된 컬럼 설정 저장/불러오기 (localStorage)
+## Key Features
 
-## 설치
+- 📊 Column Management
+  - Column selection/deselection
+  - Save/load selected column settings (localStorage)
+
+## Installation
 
 ```bash
 npm install columnia
-# 또는
+# or
 yarn add columnia
 ```
 
-## 사용방법
+## Usage
+
+### Basic Usage
+
+```tsx
+import { useTable } from "columnia";
+
+interface User {
+  name: string;
+  age: number;
+  email: string;
+}
+
+function TableComponent() {
+  const columns = [
+    { key: "name", label: "Name" },
+    { key: "age", label: "Age" },
+    { key: "email", label: "Email" },
+  ];
+
+  const { visibleColumns, isSelected, onToggleColumn, onResetColumns } =
+    useTable<User>({
+      columns,
+      storageKey: "my-table-columns", // Key for localStorage
+    });
+
+  return (
+    <div>
+      {/* Column Selection UI */}
+      <div>
+        {columns.map((column) => (
+          <label key={column.key}>
+            <input
+              type="checkbox"
+              checked={isSelected(column.key)}
+              onChange={() => onToggleColumn(column.key)}
+            />
+            {column.label}
+          </label>
+        ))}
+        <button onClick={onResetColumns}>Reset</button>
+      </div>
+
+      {/* Table */}
+      <table>
+        <thead>
+          <tr>
+            {visibleColumns.map((column) => (
+              <th key={column.key}>{column.label}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((row, index) => (
+            <tr key={index}>
+              {visibleColumns.map((column) => (
+                <td key={column.key}>{row[column.key]}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+```
+
+### API
+
+#### useTable
+
+```typescript
+const {
+  visibleColumns, // Currently visible columns
+  isSelected, // Function to check if a column is selected
+  onToggleColumn, // Function to toggle column selection
+  onResetColumns, // Function to reset column selection to default
+} = useTable<T>({
+  columns: Column < T > [], // Array of column definitions
+  storageKey: string, // localStorage key (optional)
+});
+```
+
+#### Column Type
+
+```typescript
+interface Column<T> {
+  key: keyof T; // Column key (key of data object)
+  label: string; // Column display name
+}
+```
+
+### Features
+
+- Generic Type Support: Explicitly specify the type of table data
+- Automatic Persistence: Column selection state is automatically saved to localStorage
+- Reset Functionality: Reset all columns to their initial state with `onResetColumns`
