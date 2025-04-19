@@ -1,2 +1,2 @@
-export * from "./useTable";
-export type * from "./types";
+export * from "./useTable/useTable";
+export type * from "./useTable/types";

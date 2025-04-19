@@ -19,6 +19,10 @@ npm install columnia
 yarn add columnia
 ```
 
+## Demo
+
+![데모](./assets/demo_1.gif)
+
 ## Usage
 
 ### Basic Usage

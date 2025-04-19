@@ -1,8 +1,8 @@
 import { act } from "react";
 import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { useTable } from "../useTable";
-import { ColumnType } from "../types";
+import { useTable } from "../useTable/useTable";
+import { ColumnType } from "../useTable/types";
 import { localStorageMock } from "./setup";
 
 Object.defineProperty(window, "localStorage", {
