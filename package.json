@@ -16,7 +16,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     }
   },
   "keywords": [
@@ -24,11 +24,14 @@
     "hooks",
     "table",
     "columns",
-    "typescript"
+    "typescript",
+    "react-table",
+    "flex-table",
+    "flex-column"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/columnia.git"
+    "url": "git+https://github.com/gzero1728/columnia.git"
   },
   "author": "Jiyeong Gwon <gzero1728@gmail.com>",
   "license": "MIT",
@@ -38,10 +41,6 @@
     "build": "tsup src/index.ts --format esm,cjs --dts --external react",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "vitest run src/**/*.test.ts"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",

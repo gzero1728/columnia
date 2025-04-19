@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { UseTableProps, UseTableReturnType } from "./types";
+import type { UseTableProps, UseTableReturnType } from "./types";
 
 export const useTable = <T extends object>(
   options: UseTableProps<T>

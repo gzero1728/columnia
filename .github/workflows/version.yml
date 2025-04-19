@@ -1,0 +1,74 @@
+name: Version
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Determine version bump type
+        id: bump-type
+        run: |
+          # PR 라벨 목록 가져오기
+          PR_LABELS="${{ toJSON(github.event.pull_request.labels.*.name) }}"
+
+          if [[ $PR_LABELS == *"major"* ]]; then
+            echo "TYPE=major" >> $GITHUB_OUTPUT
+            echo "LEVEL=major" >> $GITHUB_OUTPUT
+          elif [[ $PR_LABELS == *"minor"* ]]; then
+            echo "TYPE=minor" >> $GITHUB_OUTPUT
+            echo "LEVEL=minor" >> $GITHUB_OUTPUT
+          elif [[ $PR_LABELS == *"patch"* ]]; then
+            echo "TYPE=patch" >> $GITHUB_OUTPUT
+            echo "LEVEL=patch" >> $GITHUB_OUTPUT
+          else
+            # 기본값은 patch로 설정
+            echo "TYPE=patch" >> $GITHUB_OUTPUT
+            echo "LEVEL=patch" >> $GITHUB_OUTPUT
+            echo "::warning::No version bump label found. Defaulting to patch."
+          fi
+
+      - name: Bump version
+        id: version
+        run: |
+          NEW_VERSION=$(npm version ${{ steps.bump-type.outputs.TYPE }} --no-git-tag-version)
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+          # Commit the version change
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to ${NEW_VERSION} [skip ci]"
+
+          # Create an annotated tag
+          git tag -a ${NEW_VERSION} -m "Release ${NEW_VERSION}"
+
+          # Push both commit and tag
+          git push
+          git push --tags
