@@ -2,7 +2,7 @@ name: Version
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, synchronize, reopened, closed]
     branches:
       - main
 
@@ -12,13 +12,11 @@ permissions:
 
 jobs:
   version:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -30,11 +28,12 @@ jobs:
         run: npm ci
 
       - name: Configure Git
+        if: github.event.pull_request.merged == true
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-      - name: Determine version bump type
+      - name: Check version bump type
         id: bump-type
         run: |
           # PR 라벨 목록 가져오기
@@ -56,7 +55,16 @@ jobs:
             echo "::warning::No version bump label found. Defaulting to patch."
           fi
 
+      - name: Dry run version bump
+        if: github.event.pull_request.merged != true
+        id: dry-run
+        run: |
+          # 실제로 버전을 변경하지 않고 다음 버전만 확인
+          NEXT_VERSION=$(npm version ${{ steps.bump-type.outputs.TYPE }} --no-git-tag-version --dry-run)
+          echo "Next version will be: $NEXT_VERSION"
+
       - name: Bump version
+        if: github.event.pull_request.merged == true
         id: version
         run: |
           NEW_VERSION=$(npm version ${{ steps.bump-type.outputs.TYPE }} --no-git-tag-version)
